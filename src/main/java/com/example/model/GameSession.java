@@ -1,7 +1,5 @@
 package com.example.model;
 
-import com.example.publisher.generator.StartGenerator;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,37 +7,46 @@ public class GameSession {
     private int userId;
     private int sessionBalance;
     private List<GamePlay> gamePlays = new ArrayList<GamePlay>();
-    private static int sessions;
-    private int sessionNumber;
+    private static int gamePlayId;
+    private int sessionId;
 
-    public GameSession(int userId){
+    public GameSession(int userId) {
         this.userId = userId;
         sessionBalance = 100;
     }
 
 
-    public void playGame() throws InterruptedException {
-        while (sessionBalance > 0){
-            System.out.println("sessionBalance is " + sessionBalance);
-            GamePlay gamePlay = new GamePlay(userId);
-            gamePlays.add(gamePlay);
-            gamePlay.startGame();
-            long winAmount = gamePlay.playGame();
-            sessionBalance += winAmount;
-            Thread.sleep(500);
-            gamePlay.endGame(winAmount, gamePlay.getGamePlays());
-            //ADD TO BLOCKING QUEUE
-            StartGenerator.blockingQueue.put(gamePlay);
+    public GamePlay playGame() {
+
+        System.out.println("sessionBalance is " + sessionBalance);
+        GamePlay gamePlay = new GamePlay(userId, gamePlayId, sessionId);
+        gamePlays.add(gamePlay);
+        gamePlay.startGame();
+        long winAmount = gamePlay.playGame();
+        sessionBalance += winAmount;
+
+//        TODO: fix this
+        gamePlay.endGame(winAmount, gamePlayId);
+
+        this.gamePlayId += 1;
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.out.println("Error sleeping between sends");
         }
-        this.sessions += 1;
-        this.sessionNumber = sessions;
+        return gamePlay;
     }
 
-    public int getSessionBalance(){
+    public boolean isDone() {
+        return sessionBalance <= 0;
+    }
+
+    public int getSessionBalance() {
         return sessionBalance;
     }
 
-    public int getSessionNumber(){
-        return sessionNumber;
+    public int getSessionId() {
+        return sessionId;
     }
 }

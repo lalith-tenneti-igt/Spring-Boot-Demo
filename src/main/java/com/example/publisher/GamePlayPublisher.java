@@ -2,7 +2,6 @@ package com.example.publisher;
 
 
 import com.example.model.GamePlay;
-import com.example.publisher.generator.StartGenerator;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -10,7 +9,6 @@ import com.rabbitmq.client.ConnectionFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class GamePlayPublisher {
@@ -18,14 +16,11 @@ public class GamePlayPublisher {
     private Channel channel;
     private boolean isRunning = true;
     private BlockingQueue<GamePlay> blockingQueue;
-    public void setBlockingQueue() throws InterruptedException {
-        StartGenerator.generate();
-        this.blockingQueue = StartGenerator.blockingQueue;
-//        System.out.println("blockingQueue is " + blockingQueue);
-    }
 
-    public GamePlayPublisher() {
-        this.blockingQueue = new ArrayBlockingQueue<>(100);
+    public Thread publisherThread;
+
+    public GamePlayPublisher(BlockingQueue blockingQueue) {
+        this.blockingQueue = blockingQueue;
         //create rabbitmq connection and channel
         ConnectionFactory connectionFactory = new ConnectionFactory();
         try {
@@ -41,8 +36,8 @@ public class GamePlayPublisher {
      * Start event publisher thread
      */
     public void startEventPublisherThreads() {
-        EventPublisherThread thread = new EventPublisherThread();
-        new Thread(thread).start();
+        publisherThread = new Thread(new EventPublisherThread());
+        publisherThread.start();
     }
 
     /**
@@ -51,9 +46,8 @@ public class GamePlayPublisher {
     private class EventPublisherThread implements Runnable {
         @Override
         public void run(){
-            while(isRunning) {
                 try{
-                    while (!blockingQueue.isEmpty()){
+                    while (isRunning || !blockingQueue.isEmpty()){
                         GamePlay gamePlay = blockingQueue.take();
                         if (channel.isOpen()) {
                             byte[] data = serializeGamePlay(gamePlay);
@@ -65,8 +59,8 @@ public class GamePlayPublisher {
                     }
                 }
                 catch(Exception e){
+                    System.out.println("error publishing to channel");
                 }
-            }
         }
     }
 

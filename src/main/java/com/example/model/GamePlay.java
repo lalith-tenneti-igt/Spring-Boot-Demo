@@ -8,34 +8,33 @@ import java.io.Serializable;
 public class GamePlay implements Serializable {
     private int userId;
     private long wager;
-    private static int gamePlays;
-    private int gamePlayNumber;
+    private int gamePlayId;
     private GameStarted gameStarted;
     private GameEnded gameEnded;
 
-    public GamePlay(int userId){
+    private int sessionId;
+
+    public GamePlay(int userId, int gamePlayId, int sessionId){
         this.userId = userId;
+        this.gamePlayId = gamePlayId;
+        this.sessionId = sessionId;
     }
     public int getUserId(){
         return userId;
     }
 
-    public int getGamePlays(){
-        return gamePlays;
-    }
-    public int getGamePlayNumber(){
-        return gamePlayNumber;
-    }
     public void startGame(){
         gameStarted = new GameStarted(userId);
         this.wager = gameStarted.wagerAmount;
-        this.gamePlays += 1;
-        this.gamePlayNumber = gamePlays;
         //System.out.println("gamePlayNumber is " + gamePlayNumber);
     }
     public long playGame(){
         long winAmount = gameStarted.playGame();
         return winAmount;
+    }
+
+    public int getGamePlayId() {
+        return gamePlayId;
     }
 
     public void endGame(long winAmount, int gamePlayNumber ){

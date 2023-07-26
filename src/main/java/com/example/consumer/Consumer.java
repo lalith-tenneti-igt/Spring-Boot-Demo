@@ -24,8 +24,8 @@ public class Consumer extends Thread {
                 @Override
                 public void process(KieSession kSession, GamePlay gamePlay) throws Exception {
                     try {
-                        int gamePlayNumber = gamePlay.getGamePlayNumber();
-                        System.out.println("Received gamePlay. gamePlayNumber is " + gamePlayNumber);
+                        int gamePlayNumber = gamePlay.getGamePlayId();
+                        System.out.println("Received gamePlay. gamePlayId is " + gamePlayNumber);
                         FactHandle gamePlaysHandle = kSession.insert(gamePlay);
 //                        System.out.println("handle is " + gamePlaysHandle);
                         kSession.fireAllRules();

@@ -1,8 +1,8 @@
 import com.example.model.GamePlay
 
-rule "Check gamePlayNumber is larger than 5"
+rule "Check gamePlayId is larger than 5"
 when
-    GamePlay($gamePlayNumber : gamePlayNumber > 5)
+    GamePlay($gamePlayId : gamePlayId > 5)
 then
-    System.out.println("GamePlayNumber is larger than 5: " + $gamePlayNumber);
+    System.out.println("GamePlayNumber is larger than 5: " + $gamePlayId);
 end

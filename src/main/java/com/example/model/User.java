@@ -8,37 +8,43 @@ public class User {
     private static int sessionNumber;
     private long userBalance;
     private List<GameSession> sessions = new ArrayList<GameSession>();
+    private GameSession gameSession;
 
-    public User(){
-        this.userBalance = 100;
+    public User() {
+        this.userBalance = 400;
         this.sessionNumber = 0;
-        this.userId = (int)(Math.random()*100) + 1;
+        this.userId = (int) (Math.random() * 100) + 1;
+        gameSession = new GameSession(userId);
     }
 
-    public void startSession() throws InterruptedException {
-        while (userBalance > 0){
-            System.out.println("userBalance is " + userBalance);
-            GameSession gameSession = new GameSession(userId);
-            gameSession.playGame();
+    public GamePlay playSession() {
+        if (gameSession.isDone()) {
+            gameSession = new GameSession(userId);
             sessionNumber += 1;
-//            userBalance -= gameSession.getSessionBalance();
             userBalance -= 100;
+            System.out.println("userBalance is " + userBalance);
         }
+//            userBalance -= gameSession.getSessionBalance();
+        return gameSession.playGame();
     }
 
-    public void setUserId(){
-        userId = (int)(Math.random()*100) + 1;
+    public boolean isDone() {
+        return userBalance < 100;
+    }
+
+    public void setUserId() {
+        userId = (int) (Math.random() * 100) + 1;
     }
 
     public int getUserId() {
         return userId;
     }
 
-    public long getBalance(){
+    public long getBalance() {
         return userBalance;
     }
 
-    public void addBalance(long amount){
+    public void addBalance(long amount) {
         this.userBalance += amount;
     }
 }
