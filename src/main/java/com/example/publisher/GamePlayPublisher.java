@@ -5,6 +5,8 @@ import com.example.model.GamePlay;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,6 +21,8 @@ public class GamePlayPublisher {
 
     public Thread publisherThread;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GamePlayPublisher.class);
+
     public GamePlayPublisher(BlockingQueue blockingQueue) {
         this.blockingQueue = blockingQueue;
         //create rabbitmq connection and channel
@@ -27,7 +31,7 @@ public class GamePlayPublisher {
             connection = connectionFactory.newConnection(CommonConfigs.AMQP_URL);
             channel = connection.createChannel();
             channel.queueDeclare(CommonConfigs.DEFAULT_QUEUE, true, false, false, null);
-            System.out.println("CHANNEL CREATED");
+            LOGGER.info("CHANNEL CREATED");
         } catch (Exception e){
         }
     }
@@ -52,14 +56,15 @@ public class GamePlayPublisher {
                         if (channel.isOpen()) {
                             byte[] data = serializeGamePlay(gamePlay);
                             channel.basicPublish("", CommonConfigs.DEFAULT_QUEUE, null, data);
+                            LOGGER.info("Serialized and published: " + gamePlay);
                         }
                         else{
-                            System.out.println("Channel is closed");
+                            LOGGER.info("Channel is closed");
                         }
                     }
                 }
                 catch(Exception e){
-                    System.out.println("error publishing to channel");
+                    LOGGER.error("Error publishing to channel");
                 }
         }
     }
@@ -67,12 +72,12 @@ public class GamePlayPublisher {
     public void stop()
     {
         try {
-            System.out.println("Publisher thread stops");
+            LOGGER.info("Publisher thread stops");
             isRunning = false;
             blockingQueue.clear();
             channel.close();
             connection.close();
-            System.out.println("Channel is closed");
+            LOGGER.info("Channel is closed");
         } catch (Exception e) {
         }
     }

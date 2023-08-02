@@ -1,5 +1,8 @@
 package com.example.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +12,7 @@ public class GameSession {
     private List<GamePlay> gamePlays = new ArrayList<GamePlay>();
     private static int gamePlayId;
     private int sessionId;
+    private static final Logger LOGGER = LoggerFactory.getLogger(GamePlay.class);
 
     public GameSession(int userId) {
         this.userId = userId;
@@ -18,7 +22,7 @@ public class GameSession {
 
     public GamePlay playGame() {
 
-        System.out.println("sessionBalance is " + sessionBalance);
+//        System.out.println("sessionBalance is " + sessionBalance);
         GamePlay gamePlay = new GamePlay(userId, gamePlayId, sessionId);
         gamePlays.add(gamePlay);
         gamePlay.startGame();
@@ -33,7 +37,7 @@ public class GameSession {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            System.out.println("Error sleeping between sends");
+            LOGGER.error("Error sleeping between sends");
         }
         return gamePlay;
     }

@@ -3,10 +3,13 @@ package com.example.consumer;
 import com.example.model.GamePlay;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Consumer extends Thread {
 
     private MQHandler mq;
+    public static final Logger LOGGER = LoggerFactory.getLogger(Consumer.class);
 
     public Consumer(){
         mq = MQHandler.getInstance();
@@ -24,8 +27,8 @@ public class Consumer extends Thread {
                 @Override
                 public void process(KieSession kSession, GamePlay gamePlay) throws Exception {
                     try {
-                        int gamePlayNumber = gamePlay.getGamePlayId();
-                        System.out.println("Received gamePlay. gamePlayId is " + gamePlayNumber);
+//                        int gamePlayId = gamePlay.getGamePlayId();
+                        LOGGER.info("Received gamePlay " + gamePlay);
                         FactHandle gamePlaysHandle = kSession.insert(gamePlay);
 //                        System.out.println("handle is " + gamePlaysHandle);
                         kSession.fireAllRules();

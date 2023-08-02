@@ -2,11 +2,14 @@ package com.example.publisher.generator;
 
 import com.example.model.GamePlay;
 import com.example.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.BlockingQueue;
 
 public class UserRunnable implements Runnable {
     private BlockingQueue blockingQueue;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserRunnable.class);
     User user;
 
     public UserRunnable(BlockingQueue blockingQueue) {
@@ -27,6 +30,6 @@ public class UserRunnable implements Runnable {
             }
         }
 
-        System.out.println("END SESSION " + "Thread " + Thread.currentThread().getName() + ": userId is " + user.getUserId() + " user balance is " + user.getBalance());
+        LOGGER.info("End User Thread " + Thread.currentThread().getName() + ": userId=" + user.getUserId() + " userBalance=" + user.getBalance());
     }
 }

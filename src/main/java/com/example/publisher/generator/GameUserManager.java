@@ -1,6 +1,8 @@
 package com.example.publisher.generator;
 
 import com.example.model.GamePlay;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
@@ -8,6 +10,7 @@ import java.util.concurrent.BlockingQueue;
 public class GameUserManager {
     public BlockingQueue<GamePlay> blockingQueue;
     int numUsers;
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameUserManager.class);
 
     ArrayList<Thread> userThreads;
 
@@ -41,7 +44,7 @@ public class GameUserManager {
                 t.join();
             }
         } catch (Exception e) {
-            System.out.println("Error joining threads");
+            LOGGER.error("Error joining threads");
         }
     }
 

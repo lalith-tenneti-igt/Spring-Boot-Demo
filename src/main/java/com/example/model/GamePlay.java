@@ -1,14 +1,17 @@
 package com.example.model;
 
 import org.kie.api.definition.type.PropertyReactive;
+import org.kie.api.definition.type.Role;
 
 import java.io.Serializable;
 
+@Role(Role.Type.EVENT)
 @PropertyReactive
 public class GamePlay implements Serializable {
     private int userId;
     private long wager;
     private int gamePlayId;
+    private long winAmount;
     private GameStarted gameStarted;
     private GameEnded gameEnded;
 
@@ -30,6 +33,11 @@ public class GamePlay implements Serializable {
     }
     public long playGame(){
         long winAmount = gameStarted.playGame();
+        this.winAmount = winAmount;
+        return winAmount;
+    }
+
+    public long getWinAmount() {
         return winAmount;
     }
 

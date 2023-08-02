@@ -1,8 +1,10 @@
 import com.example.model.GamePlay
+import com.example.consumer.Consumer
 
-rule "Check gamePlayId is larger than 5"
+rule "Detect large winAmount event"
 when
-    GamePlay($gamePlayId : gamePlayId > 5)
+    $event1 : GamePlay( winAmount > 5.0 ) over window:length(10) from entry-point "GamePlayStream"
+    $event2 : GamePlay( winAmount > 5.0, this after[5, 8] $event1 ) from entry-point "GamePlayStream"
 then
-    System.out.println("GamePlayNumber is larger than 5: " + $gamePlayId);
+    Consumer.LOGGER.info("Rule Fired: Large winAmount event detected for gamePlayId " + $event2.getGamePlayId() );
 end

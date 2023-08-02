@@ -1,5 +1,8 @@
 package com.example.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +12,7 @@ public class User {
     private long userBalance;
     private List<GameSession> sessions = new ArrayList<GameSession>();
     private GameSession gameSession;
+    private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
 
     public User() {
         this.userBalance = 400;
@@ -22,7 +26,7 @@ public class User {
             gameSession = new GameSession(userId);
             sessionNumber += 1;
             userBalance -= 100;
-            System.out.println("userBalance is " + userBalance);
+            LOGGER.info("userBalance is " + userBalance);
         }
 //            userBalance -= gameSession.getSessionBalance();
         return gameSession.playGame();
