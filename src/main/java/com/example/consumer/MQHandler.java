@@ -3,6 +3,7 @@ package com.example.consumer;
 import com.example.model.GamePlay;
 import com.rabbitmq.client.*;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.EntryPoint;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.io.ObjectInputStream;
 
 public class MQHandler {
     public KieSession kieSession;
+    private EntryPoint ep;
     private static class Factory {
         private static MQHandler INSTANCE = new MQHandler();
     }
@@ -20,6 +22,10 @@ public class MQHandler {
 
     public void setKieSession(KieSession kieSession) {
         this.kieSession = kieSession;
+    }
+
+    public void setEp(EntryPoint ep) {
+        this.ep = ep;
     }
 
     private static GamePlay deserializePlayerSession(byte[] serializedData) throws IOException, ClassNotFoundException {
@@ -37,7 +43,7 @@ public class MQHandler {
             try {
                 byte[] serializedData = delivery.getBody();
                 GamePlay gamePlay = deserializePlayerSession(serializedData);
-                callback.process(kieSession, gamePlay);
+                callback.process(kieSession, gamePlay, ep);
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (Exception e) {

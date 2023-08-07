@@ -4,7 +4,7 @@ import com.example.consumer.Consumer
 rule "Check for winAmount greater than 5"
 when
     $gamePlay: GamePlay(winAmount > 5.0)
+        over window:length(10) from entry-point "GamePlayStream"   // Sliding window of 10 events
 then
     System.out.println("Rule Fired: winAmount greater than 5 for gamePlayId " + $gamePlay.getGamePlayId());
 end
-
