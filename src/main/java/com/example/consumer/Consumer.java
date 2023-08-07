@@ -30,7 +30,6 @@ public class Consumer extends Thread {
 //                        int gamePlayId = gamePlay.getGamePlayId();
                         LOGGER.info("Received gamePlay " + gamePlay);
                         FactHandle gamePlaysHandle = kSession.insert(gamePlay);
-//                        System.out.println("handle is " + gamePlaysHandle);
                         kSession.fireAllRules();
                     }
                     catch (Exception e) {
