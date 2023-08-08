@@ -1,10 +1,13 @@
-import com.example.model.GamePlay
-import com.example.consumer.Consumer
+import com.example.model.GamePlay;
 
-rule "Check for winAmount greater than 5"
+rule "Accumulated winAmount < -50"
 when
-    $gamePlay: GamePlay(winAmount > 5.0)
-        over window:length(10) from entry-point "GamePlayStream"   // Sliding window of 10 events
+    $gamePlay: GamePlay() from entry-point "GamePlayStream"
+    $totalWinAmount: Number(longValue < -50) from accumulate(
+        GamePlay($userId: userId, $winAmount: winAmount, userId == $gamePlay.userId) from entry-point "GamePlayStream",
+        sum($winAmount)
+    )
 then
-    System.out.println("Rule Fired: winAmount greater than 5 for gamePlayId " + $gamePlay.getGamePlayId());
+    // Rule logic here
+    System.out.println("Total winAmount is " + $totalWinAmount + " Player with this userID: " + $gamePlay.getUserId() + " has accumulated winAmount less than -50");
 end

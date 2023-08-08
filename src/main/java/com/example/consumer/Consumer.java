@@ -3,7 +3,6 @@ package com.example.consumer;
 import com.example.model.GamePlay;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +30,8 @@ public class Consumer extends Thread {
                 public void process(KieSession kSession, GamePlay gamePlay, EntryPoint entryPoint) throws Exception {
                     try {
 //                        int gamePlayId = gamePlay.getGamePlayId();
-                        LOGGER.info("Received gamePlay " + gamePlay);
-                        FactHandle gamePlaysHandle = kSession.insert(gamePlay);
+                        LOGGER.info("Received gamePlay " + gamePlay + " winAMount is " + gamePlay.getWinAmount() + " userId is " + gamePlay.getUserId());
+//                        FactHandle gamePlaysHandle = kSession.insert(gamePlay);
 //                        gamePlayStream.insert(gamePlayEvent);
                         entryPoint.insert(gamePlay);
                         kSession.fireAllRules();
