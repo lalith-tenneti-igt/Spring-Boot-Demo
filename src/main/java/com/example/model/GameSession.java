@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameSession {
-    private int userId;
     private int sessionBalance;
     private List<GamePlay> gamePlays = new ArrayList<GamePlay>();
     private static int gamePlayId;
     private int sessionId;
     private static final Logger LOGGER = LoggerFactory.getLogger(GamePlay.class);
+    User user;
 
-    public GameSession(int userId) {
-        this.userId = userId;
+    public GameSession(User user) {
+        this.user = user;
         sessionBalance = 100;
     }
 
@@ -23,7 +23,7 @@ public class GameSession {
     public GamePlay playGame() {
 
 //        System.out.println("sessionBalance is " + sessionBalance);
-        GamePlay gamePlay = new GamePlay(userId, gamePlayId, sessionId);
+        GamePlay gamePlay = new GamePlay(this.user, gamePlayId, sessionId);
         gamePlays.add(gamePlay);
         gamePlay.startGame();
         long winAmount = gamePlay.playGame();

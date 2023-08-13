@@ -13,17 +13,20 @@ public class User {
     private List<GameSession> sessions = new ArrayList<GameSession>();
     private GameSession gameSession;
     private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
+    private int age;
 
     public User() {
         this.userBalance = 400;
         this.sessionNumber = 0;
         this.userId = (int) (Math.random() * 100) + 1;
-        gameSession = new GameSession(userId);
+//        this.age = (int) (Math.random() * 50) + 21;
+        this.age = 52;
+        gameSession = new GameSession(this);
     }
 
     public GamePlay playSession() {
         if (gameSession.isDone()) {
-            gameSession = new GameSession(userId);
+            gameSession = new GameSession(this);
             sessionNumber += 1;
             userBalance -= 100;
             LOGGER.info("userBalance is " + userBalance);
@@ -50,5 +53,9 @@ public class User {
 
     public void addBalance(long amount) {
         this.userBalance += amount;
+    }
+
+    public int getAge() {
+        return age;
     }
 }
