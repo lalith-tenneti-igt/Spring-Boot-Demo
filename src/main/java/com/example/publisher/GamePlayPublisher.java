@@ -22,17 +22,22 @@ public class GamePlayPublisher {
     public Thread publisherThread;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GamePlayPublisher.class);
+    private String endpointURL;
+    private String endpointQueue;
 
     public GamePlayPublisher(BlockingQueue blockingQueue, String endpointURL, String endpointQueue) {
         this.blockingQueue = blockingQueue;
         //create rabbitmq connection and channel
         ConnectionFactory connectionFactory = new ConnectionFactory();
+        this.endpointQueue = endpointQueue;
+        this.endpointURL = endpointURL;
         try {
-            connection = connectionFactory.newConnection(endpointURL);
+            connection = connectionFactory.newConnection(this.endpointURL);
             channel = connection.createChannel();
-            channel.queueDeclare(endpointQueue, true, false, false, null);
+            channel.queueDeclare(this.endpointQueue, true, false, false, null);
             LOGGER.info("CHANNEL CREATED");
         } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -40,7 +45,7 @@ public class GamePlayPublisher {
      * Start event publisher thread
      */
     public void startEventPublisherThreads() {
-        publisherThread = new Thread(new EventPublisherThread());
+        publisherThread = new Thread(new EventPublisherThread(this.endpointURL, this.endpointQueue));
         publisherThread.start();
     }
 
@@ -48,6 +53,13 @@ public class GamePlayPublisher {
      * EventPublisherThread: publish rabbitmq event to rabbitmq server
      */
     private class EventPublisherThread implements Runnable {
+        private String endpointURL;
+        private String endpointQueue;
+        public EventPublisherThread(String endpointURL, String endpointQueue) {
+            super();
+            this.endpointURL = endpointURL;
+            this.endpointQueue = endpointQueue;
+        }
         @Override
         public void run(){
                 try{
@@ -55,7 +67,7 @@ public class GamePlayPublisher {
                         GamePlay gamePlay = blockingQueue.take();
                         if (channel.isOpen()) {
                             byte[] data = serializeGamePlay(gamePlay);
-                            channel.basicPublish("", CommonConfigs.DEFAULT_QUEUE, null, data);
+                            channel.basicPublish("", this.endpointQueue, null, data);
                             LOGGER.info("Serialized and published: " + gamePlay);
                         }
                         else{
@@ -64,6 +76,7 @@ public class GamePlayPublisher {
                     }
                 }
                 catch(Exception e){
+                    e.printStackTrace();
                     LOGGER.error("Error publishing to channel");
                 }
         }
