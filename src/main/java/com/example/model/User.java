@@ -18,9 +18,9 @@ public class User {
     public User() {
         this.userBalance = 400;
         this.sessionNumber = 0;
-        this.userId = (int) (Math.random() * 100) + 1;
-//        this.age = (int) (Math.random() * 50) + 21;
-        this.age = 52;
+        this.userId = (int) (Math.random() * 2_000_000_000) + 1;
+        this.age = (int) (Math.random() * 50) + 21;
+//        this.age = 52;
         gameSession = new GameSession(this);
     }
 
