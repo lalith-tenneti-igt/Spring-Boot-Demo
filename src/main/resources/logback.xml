@@ -1,0 +1,14 @@
+<configuration>
+    <appender name="tofile" class="ch.qos.logback.core.FileAppender">
+        <file>logs/logback.log</file>
+        <append>true</append>
+        <immediateFlush>false</immediateFlush>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="tofile" />
+    </root>
+</configuration>

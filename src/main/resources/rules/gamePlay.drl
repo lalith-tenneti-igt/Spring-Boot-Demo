@@ -1,0 +1,26 @@
+import com.example.model.GamePlay;
+
+rule "Accumulated winAmount < -50"
+when
+    $gamePlay: GamePlay() from entry-point "GamePlayStream"
+    $totalWinAmount: Number(longValue < -50) from accumulate(
+        GamePlay($userId: userId, $age: age, $winAmount: winAmount, userId == $gamePlay.userId) from entry-point "GamePlayStream",
+        sum($winAmount)
+    )
+then
+    // Rule logic here
+    System.out.println("Less than -50: Total winAmount for player " + $gamePlay.getUserId() + " is " + $totalWinAmount);
+end
+
+
+rule "Accumulated winAmount < -50 and age >= 50"
+when
+    $gamePlay: GamePlay(age >= 50) from entry-point "GamePlayStream"
+    $totalWinAmount: Number(longValue < -50) from accumulate(
+        GamePlay($userId: userId, $age: age, $winAmount: winAmount, userId == $gamePlay.userId) from entry-point "GamePlayStream",
+        sum($winAmount)
+    )
+then
+    // Rule logic here
+    System.out.println("Age >= 50 and winAmount Less than -50: Total winAmount for player " + $gamePlay.getUserId() + " is " + $totalWinAmount);
+end
