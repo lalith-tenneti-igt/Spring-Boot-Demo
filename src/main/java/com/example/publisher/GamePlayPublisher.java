@@ -23,14 +23,14 @@ public class GamePlayPublisher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GamePlayPublisher.class);
 
-    public GamePlayPublisher(BlockingQueue blockingQueue) {
+    public GamePlayPublisher(BlockingQueue blockingQueue, String endpointURL, String endpointQueue) {
         this.blockingQueue = blockingQueue;
         //create rabbitmq connection and channel
         ConnectionFactory connectionFactory = new ConnectionFactory();
         try {
-            connection = connectionFactory.newConnection(CommonConfigs.AMQP_URL);
+            connection = connectionFactory.newConnection(endpointURL);
             channel = connection.createChannel();
-            channel.queueDeclare(CommonConfigs.DEFAULT_QUEUE, true, false, false, null);
+            channel.queueDeclare(endpointQueue, true, false, false, null);
             LOGGER.info("CHANNEL CREATED");
         } catch (Exception e){
         }
